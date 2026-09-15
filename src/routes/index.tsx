@@ -71,7 +71,7 @@ function writeJson(key: string, value: unknown) {
 
 function parseDate(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, (m ?? 1) - 1, d ?? 1);
+  return new Date(y ?? 2026, (m ?? 1) - 1, d ?? 1);
 }
 
 /* Textarea con auto-resize (campo Equipe) */
@@ -233,11 +233,11 @@ function TurnoPage() {
   const range =
     monday.getDate() +
     " " +
-    mesiNomi[monday.getMonth()].slice(0, 3) +
+    (mesiNomi[monday.getMonth()] ?? "").slice(0, 3) +
     " – " +
     end.getDate() +
     " " +
-    mesiNomi[end.getMonth()].slice(0, 3) +
+    (mesiNomi[end.getMonth()] ?? "").slice(0, 3) +
     " " +
     end.getFullYear();
 
@@ -402,7 +402,7 @@ function TurnoPage() {
           <table className="turno">
             <thead>
               <tr>
-                <th className="col-cat">{mesiNomi[monday.getMonth()].toUpperCase()}</th>
+                <th className="col-cat">{(mesiNomi[monday.getMonth()] ?? "").toUpperCase()}</th>
                 {days.map((d, i) => (
                   <th key={i} className={"day" + (i >= 5 ? " weekend" : "")}>
                     <span className="day-name">{giorniNomi[d.getDay()]}</span>
