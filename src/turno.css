@@ -488,3 +488,7 @@
   .turno-app .toolbar__actions { justify-content: center; }
   .turno-app .turno { font-size: 0.7rem; }
 }
+
+@media print {
+  .turno-app .cell-field::placeholder { color: transparent !important; }
+}
