@@ -1,0 +1,494 @@
+/* ============================================================
+   Chi Fa Cosa - Easy · Turno Settimanale Sale Operatorie
+   Stili ottimizzati per stampa A4 orizzontale (landscape)
+   ============================================================ */
+
+.turno-app {
+  --t-primary: #1b5e7a;
+  --t-primary-dark: #103f52;
+  --t-accent: #2e8b9e;
+  --t-border: #c9d6db;
+  --t-text: #1f2d34;
+  --t-muted: #5a6b73;
+  --t-weekend: #fbe9e7;
+  --t-weekend-header: #b94a48;
+  --t-category: #1b5e7a;
+  --t-subcategory: #eef4f6;
+  --t-row-alt: #f7fbfc;
+
+  --t-morning: #eef6fb;
+  --t-morning-alt: #e3f0f7;
+  --t-morning-header: #2e7ba8;
+  --t-morning-border: #bcd6e6;
+
+  --t-afternoon: #fff6ec;
+  --t-afternoon-alt: #fcefdf;
+  --t-afternoon-header: #c8791f;
+  --t-afternoon-border: #ecd6b5;
+
+  --t-weekend-morn: #f7d9d4;
+  --t-weekend-morn-alt: #f3d0ca;
+  --t-weekend-aft: #f6d9c9;
+  --t-weekend-aft-alt: #f2cfbb;
+
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--t-text);
+  background: #e9eef1;
+  -webkit-font-smoothing: antialiased;
+  padding: 18px 12px 40px;
+  min-height: 100vh;
+}
+
+.turno-app *,
+.turno-app *::before,
+.turno-app *::after {
+  box-sizing: border-box;
+}
+
+.turno-app .app {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ---------- Barra di controllo (non stampata) ---------- */
+.turno-app .toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--t-primary), var(--t-primary-dark));
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 4px 14px rgba(16, 63, 82, 0.25);
+}
+
+.turno-app .toolbar__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.turno-app .toolbar__logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--t-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+.turno-app .toolbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.turno-app .nav-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 40px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.turno-app .nav-btn:hover { background: rgba(255, 255, 255, 0.3); }
+.turno-app .nav-btn:active { transform: scale(0.96); }
+.turno-app .nav-btn.wide { width: auto; padding: 0 12px; font-size: 0.8rem; }
+
+.turno-app .week-display {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--t-primary-dark);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 230px;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.turno-app .toolbar__actions { display: flex; gap: 8px; }
+
+/* ---------- Switch vista ---------- */
+.turno-app .toolbar__view-switch {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 3px;
+}
+.turno-app .view-tab {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.turno-app .view-tab:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+.turno-app .view-tab.active {
+  background: #fff;
+  color: var(--t-primary-dark);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.turno-app .action-btn {
+  background: #fff;
+  color: var(--t-primary-dark);
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.turno-app .action-btn:hover { background: #f0f6f8; }
+.turno-app .action-btn:active { transform: scale(0.97); }
+
+/* ---------- Foglio A4 ---------- */
+.turno-app .sheet {
+  background: #fff;
+  padding: 26px 30px 22px;
+  border: 1px solid var(--t-border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- Intestazione documento ---------- */
+.turno-app .doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 3px solid var(--t-primary);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  gap: 16px;
+}
+.turno-app .doc-header__left h1 {
+  font-size: 1.45rem;
+  color: var(--t-primary-dark);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin: 0;
+}
+.turno-app .doc-header__left p {
+  color: var(--t-muted);
+  font-size: 0.82rem;
+  margin: 2px 0 0;
+}
+.turno-app .doc-header__right {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--t-muted);
+  white-space: nowrap;
+}
+.turno-app .doc-header__right strong { color: var(--t-primary-dark); font-size: 0.95rem; }
+
+/* ---------- Tabella turno ---------- */
+.turno-app .turno {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.82rem;
+}
+
+.turno-app .section-bar td {
+  background: linear-gradient(90deg, var(--t-primary), var(--t-primary-dark));
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 6px 8px;
+  border: 1px solid var(--t-primary-dark);
+}
+.turno-app .section-bar.morning td {
+  background: linear-gradient(90deg, var(--t-morning-header), #236084);
+  border-color: var(--t-morning-header);
+}
+.turno-app .section-bar.afternoon td {
+  background: linear-gradient(90deg, var(--t-afternoon-header), #a86518);
+  border-color: var(--t-afternoon-header);
+}
+
+.turno-app .turno th,
+.turno-app .turno td {
+  border: 1px solid var(--t-border);
+  vertical-align: middle;
+  padding: 6px 7px;
+  word-wrap: break-word;
+}
+
+.turno-app .turno th.col-cat {
+  width: 130px;
+  background: var(--t-category);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+.turno-app .turno thead th.day {
+  background: var(--t-primary);
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  padding: 7px 4px;
+  line-height: 1.2;
+}
+.turno-app .turno thead th.day .day-name { display: block; font-size: 0.8rem; }
+.turno-app .turno thead th.day .day-num { display: block; font-size: 1.05rem; font-weight: 700; }
+.turno-app .turno thead th.day.weekend { background: var(--t-weekend-header); }
+
+.turno-app .turno tbody tr:nth-child(even) td.cell { background: var(--t-row-alt); }
+.turno-app .turno tbody tr:nth-child(even) td.cell.weekend { background: #f9e4e1; }
+.turno-app .turno td.cell.weekend { background: var(--t-weekend); }
+
+.turno-app .turno td.cell.morning { background: var(--t-morning); border-color: var(--t-morning-border); }
+.turno-app .turno tbody tr.morning-row:nth-child(even) td.cell.morning { background: var(--t-morning-alt); }
+.turno-app .turno td.cell.morning.weekend { background: var(--t-weekend-morn); }
+.turno-app .turno tbody tr.morning-row:nth-child(even) td.cell.morning.weekend { background: var(--t-weekend-morn-alt); }
+
+.turno-app .turno td.cell.afternoon { background: var(--t-afternoon); border-color: var(--t-afternoon-border); }
+.turno-app .turno tbody tr.afternoon-row:nth-child(even) td.cell.afternoon { background: var(--t-afternoon-alt); }
+.turno-app .turno td.cell.afternoon.weekend { background: var(--t-weekend-aft); }
+.turno-app .turno tbody tr.afternoon-row:nth-child(even) td.cell.afternoon.weekend { background: var(--t-weekend-aft-alt); }
+
+.turno-app .turno td.cell.neutral { background: #ffffff; }
+.turno-app .turno tbody tr.neutral-row:nth-child(even) td.cell.neutral { background: var(--t-row-alt); }
+.turno-app .turno td.cell.neutral.weekend { background: var(--t-weekend); }
+.turno-app .turno tbody tr.neutral-row:nth-child(even) td.cell.neutral.weekend { background: #f9e4e1; }
+
+.turno-app .turno td.col-cat {
+  background: var(--t-category);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding-left: 10px;
+  text-align: left;
+  cursor: text;
+}
+.turno-app .turno td.col-cat.neutral,
+.turno-app .turno td.col-cat.sub {
+  background: var(--t-subcategory);
+  color: var(--t-primary-dark);
+}
+
+.turno-app .turno td.cell { text-align: center; }
+
+/* ---------- Input nomi sale ---------- */
+.turno-app .room-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-align: left;
+  outline: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.turno-app .room-input:hover { background: rgba(255, 255, 255, 0.25); }
+.turno-app .room-input:focus {
+  background: #fff;
+  color: var(--t-primary-dark);
+  box-shadow: 0 0 0 2px var(--t-accent);
+}
+.turno-app .turno td.col-cat.sub .room-input:hover { background: rgba(27, 94, 122, 0.08); }
+.turno-app .turno td.col-cat.sub .room-input:focus { background: #fff; }
+
+/* ---------- Celle modificabili ---------- */
+.turno-app .cell-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+.turno-app .cell-fields.team-only { gap: 0; }
+.turno-app .cell-field {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  color: var(--t-text);
+  padding: 2px 4px;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.turno-app textarea.cell-field {
+  resize: none;
+  overflow: hidden;
+  min-height: 1.5em;
+  line-height: 1.3;
+  font-family: inherit;
+}
+.turno-app .cell-field.specialty {
+  font-weight: 700;
+  color: var(--t-primary-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  font-size: 0.76rem;
+}
+.turno-app .cell-field.team {
+  font-size: 0.76rem;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.turno-app .cell-field::placeholder {
+  color: #c5d3da;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 0.7rem;
+  font-style: italic;
+  opacity: 0.7;
+}
+.turno-app .cell-field.specialty::placeholder { color: #bccfd6; opacity: 0.6; }
+.turno-app .cell-field:hover {
+  border-color: rgba(27, 94, 122, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+}
+.turno-app .cell-field:focus {
+  border-color: var(--t-accent);
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(46, 139, 158, 0.15);
+}
+.turno-app .turno td.cell.editable { cursor: text; }
+
+/* ---------- Contenuto celle statiche ---------- */
+.turno-app .cell-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  text-align: center;
+}
+.turno-app .cell-specialty {
+  font-weight: 700;
+  color: var(--t-primary-dark);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+.turno-app .cell-staff { color: var(--t-text); font-size: 0.78rem; line-height: 1.35; }
+.turno-app .cell-note { color: var(--t-muted); font-style: italic; font-size: 0.72rem; }
+
+.turno-app .tag {
+  display: inline-block;
+  font-size: 0.66rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.turno-app .tag-urgenza { background: #fdecea; color: #b94a48; border: 1px solid #f5c6c1; }
+.turno-app .tag-ferie { background: #fff4e5; color: #b8860b; border: 1px solid #f3d9a6; }
+.turno-app .tag-rip { background: #e8f5e9; color: #2e7d32; border: 1px solid #c5e3c8; }
+.turno-app .tag-rep { background: #e3f2fd; color: #1565c0; border: 1px solid #b3dbf2; }
+
+.turno-app .empty-cell { color: #c9d6db; font-size: 0.75rem; }
+
+/* ---------- Footer / firma ---------- */
+.turno-app .doc-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.turno-app .signature { text-align: right; font-size: 0.75rem; color: var(--t-muted); }
+.turno-app .signature__line {
+  display: inline-block;
+  width: 180px;
+  border-top: 1px solid var(--t-muted);
+  margin-top: 28px;
+  padding-top: 3px;
+}
+
+.turno-app .edit-hint {
+  font-size: 0.7rem;
+  color: var(--t-muted);
+  margin-left: 8px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ============================================================
+   STAMPA - A4 landscape
+   ============================================================ */
+@page {
+  size: A4 landscape;
+  margin: 8mm;
+}
+
+@media print {
+  .turno-app { background: #fff; padding: 0; }
+  .turno-app .toolbar,
+  .turno-app .no-print { display: none !important; }
+  .turno-app .app { max-width: none; }
+  .turno-app .sheet {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 6px 8px;
+  }
+  .turno-app .turno { font-size: 0.72rem; }
+  .turno-app .turno th,
+  .turno-app .turno td { padding: 4px 5px; }
+  .turno-app .turno th.col-cat { width: 110px; }
+  .turno-app .room-input { border: none; box-shadow: none; background: transparent; }
+  .turno-app .cell-field { border: none; background: transparent; padding: 0; }
+  .turno-app .cell-field.specialty,
+  .turno-app .cell-field.team { font-size: 0.72rem; }
+  .turno-app textarea.cell-field { overflow: visible; height: auto !important; }
+  .turno-app .section-bar td { font-size: 0.7rem; padding: 4px 8px; }
+  .turno-app .doc-header__left h1 { font-size: 1.2rem; }
+  .turno-app .doc-header { margin-bottom: 8px; padding-bottom: 6px; }
+  .turno-app .doc-footer { margin-top: 8px; }
+  .turno-app .signature__line { margin-top: 18px; width: 150px; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .turno-app .toolbar { flex-direction: column; align-items: stretch; }
+  .turno-app .toolbar__nav { justify-content: center; }
+  .turno-app .toolbar__actions { justify-content: center; }
+  .turno-app .turno { font-size: 0.7rem; }
+}
+
+@media print {
+  .turno-app .cell-field::placeholder { color: transparent !important; }
+}
