@@ -74,15 +74,19 @@ function parseDate(iso: string) {
   return new Date(y ?? 2026, (m ?? 1) - 1, d ?? 1);
 }
 
-/* Textarea con auto-resize (campo Equipe) */
-function TeamField({
+/* Textarea con auto-resize (campi Specialità / Equipe) */
+function AutoField({
   value,
   onChange,
   onCommit,
+  className,
+  placeholder,
 }: {
   value: string;
   onChange: (v: string) => void;
   onCommit: () => void;
+  className: string;
+  placeholder: string;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -96,15 +100,20 @@ function TeamField({
   return (
     <textarea
       ref={ref}
-      className="cell-field team"
+      className={className}
       rows={1}
-      placeholder="Equipe"
+      placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onBlur={onCommit}
     />
   );
 }
+
+function TeamField(props: { value: string; onChange: (v: string) => void; onCommit: () => void }) {
+  return <AutoField {...props} className="cell-field team" placeholder="Equipe" />;
+}
+
 
 function StaticCell({ preset }: { preset: Preset }) {
   if (!preset || (!preset.s && !preset.t)) return <span className="empty-cell">—</span>;
@@ -282,22 +291,19 @@ function TurnoPage() {
           <td key={i} className={classes.join(" ")}>
             {editableCell ? (
               <div className="cell-fields">
-                <input
-                  type="text"
+                <AutoField
                   className="cell-field specialty"
                   placeholder="Specialità"
                   value={fieldValue(cellKey, "specialty", preset)}
-                  onChange={(e) => setDraft(cellKey, "specialty", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-                  }}
-                  onBlur={() =>
+                  onChange={(v) => setDraft(cellKey, "specialty", v)}
+                  onCommit={() =>
                     commit(cellKey, {
                       specialty: fieldValue(cellKey, "specialty", preset),
                       team: fieldValue(cellKey, "team", preset),
                     })
                   }
                 />
+
                 <TeamField
                   value={fieldValue(cellKey, "team", preset)}
                   onChange={(v) => setDraft(cellKey, "team", v)}
