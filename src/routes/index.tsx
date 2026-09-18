@@ -74,15 +74,19 @@ function parseDate(iso: string) {
   return new Date(y ?? 2026, (m ?? 1) - 1, d ?? 1);
 }
 
-/* Textarea con auto-resize (campo Equipe) */
-function TeamField({
+/* Textarea con auto-resize (campi Specialità / Equipe) */
+function AutoField({
   value,
   onChange,
   onCommit,
+  className,
+  placeholder,
 }: {
   value: string;
   onChange: (v: string) => void;
   onCommit: () => void;
+  className: string;
+  placeholder: string;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -96,15 +100,20 @@ function TeamField({
   return (
     <textarea
       ref={ref}
-      className="cell-field team"
+      className={className}
       rows={1}
-      placeholder="Equipe"
+      placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onBlur={onCommit}
     />
   );
 }
+
+function TeamField(props: { value: string; onChange: (v: string) => void; onCommit: () => void }) {
+  return <AutoField {...props} className="cell-field team" placeholder="Equipe" />;
+}
+
 
 function StaticCell({ preset }: { preset: Preset }) {
   if (!preset || (!preset.s && !preset.t)) return <span className="empty-cell">—</span>;
