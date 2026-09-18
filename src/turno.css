@@ -359,7 +359,13 @@
   text-transform: uppercase;
   letter-spacing: 0.2px;
   font-size: 0.76rem;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
 }
+
 .turno-app .cell-field.team {
   font-size: 0.76rem;
   line-height: 1.3;
