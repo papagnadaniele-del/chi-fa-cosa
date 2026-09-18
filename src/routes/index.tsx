@@ -140,12 +140,12 @@ function TurnoPage() {
 
   const monday = useMemo(() => parseDate(mondayIso), [mondayIso]);
 
-  /* Settimana iniziale: quella corrente se ha dati, altrimenti la settimana demo */
+  /* Settimana iniziale: sempre quella del giorno di apertura */
   useEffect(() => {
-    const todayMonday = isoDate(getMonday(new Date()));
-    if (weeksData[todayMonday]) setMondayIso(todayMonday);
+    setMondayIso(isoDate(getMonday(new Date())));
     setRoomNames(readJson<Record<string, string>>(ROOM_NAMES_KEY, {}));
   }, []);
+
 
   /* Contenuto celle salvato per la settimana visualizzata */
   useEffect(() => {
