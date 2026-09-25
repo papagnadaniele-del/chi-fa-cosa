@@ -281,7 +281,7 @@ function TurnoPage() {
         const weekend = i >= 5;
         const preset = presetFor(row.id, i);
         const cellKey = row.id + "_" + i;
-        const editableCell = row.editableCells && i < 5;
+        const editableCell = row.editableCells;
         const editableTeam = row.editableTeam;
         const classes = ["cell", sectionClass];
         if (weekend) classes.push("weekend");
