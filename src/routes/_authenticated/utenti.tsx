@@ -8,6 +8,7 @@ import {
   listUsers,
   resetUserPassword,
   setUserRoles,
+  updateUserProfile,
 } from "@/lib/admin.functions";
 import { useMe } from "@/lib/use-me";
 import "../../turno.css";
@@ -49,8 +50,13 @@ function UtentiPage() {
   const setRoles = useServerFn(setUserRoles);
   const resetPw = useServerFn(resetUserPassword);
   const del = useServerFn(deleteAppUser);
+  const update = useServerFn(updateUserProfile);
 
   const users = useQuery({ queryKey: ["users"], queryFn: () => fetchUsers(), enabled: !!me.data?.isAdmin });
+
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editCf, setEditCf] = useState("");
 
   const [cf, setCf] = useState("");
   const [name, setName] = useState("");
