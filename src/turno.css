@@ -506,7 +506,8 @@
 .turno-app .auth-logo { width: 44px; height: 44px; }
 .turno-app .auth-sub, .turno-app .auth-note { margin: 0; color: #64748b; font-size: .85rem; }
 .turno-app .auth-card label { display: flex; flex-direction: column; gap: .3rem; font-size: .85rem; font-weight: 600; }
-.turno-app .auth-card input, .turno-app .admin-form input:not([type=checkbox]) { padding: .55rem .7rem; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+.turno-app .auth-card input, .turno-app .admin-form input:not([type=checkbox]), .turno-app .admin-table input:not([type=checkbox]) { padding: .55rem .7rem; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+.turno-app .admin-table input:not([type=checkbox]) { width: 100%; padding: .35rem .5rem; }
 .turno-app .auth-error { color: #b91c1c; font-size: .85rem; margin: .5rem 0; }
 .turno-app .auth-info { color: #15803d; font-size: .85rem; margin: .5rem 0; }
 .turno-app .user-badge { font-size: .8rem; opacity: .85; margin-right: .5rem; }
