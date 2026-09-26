@@ -55,7 +55,7 @@ function AuthPage() {
               </h2>
               <div className="auth-hero__bar" />
               <p className="auth-hero__desc">
-                Turno settimanale delle sale operatorie e dei servizi, condiviso online:
+                Programma settimanale delle sale operatorie e dei servizi, condiviso online:
                 il personale abilitato consulta il programma da qualsiasi dispositivo
                 e l'amministratore lo aggiorna in tempo reale.
               </p>
