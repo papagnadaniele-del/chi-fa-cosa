@@ -286,7 +286,7 @@ function TurnoPage() {
   const renderRow = (row: RowDef, sectionClass: string) => (
     <tr key={row.id} className={sectionClass + "-row cat-main"}>
       <td className={"col-cat " + sectionClass}>
-        {row.editable ? (
+        {row.editable && !readOnly ? (
           <input
             className="room-input"
             type="text"
@@ -294,10 +294,13 @@ function TurnoPage() {
             placeholder={row.label}
             value={roomLabel(row.linkTo ?? row.id, row.label)}
             onChange={(e) => setRoomLabel(row.linkTo ?? row.id, e.target.value)}
+            onBlur={commitRoomNames}
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
           />
+        ) : row.editable ? (
+          roomNames[row.linkTo ?? row.id] || row.label
         ) : (
           row.label
         )}
@@ -319,6 +322,7 @@ function TurnoPage() {
                 <AutoField
                   className="cell-field specialty"
                   placeholder="Specialità"
+                  readOnly={readOnly}
                   value={fieldValue(cellKey, "specialty", preset)}
                   onChange={(v) => setDraft(cellKey, "specialty", v)}
                   onCommit={() =>
@@ -330,6 +334,7 @@ function TurnoPage() {
                 />
 
                 <TeamField
+                  readOnly={readOnly}
                   value={fieldValue(cellKey, "team", preset)}
                   onChange={(v) => setDraft(cellKey, "team", v)}
                   onCommit={() =>
@@ -343,6 +348,7 @@ function TurnoPage() {
             ) : editableTeam ? (
               <div className="cell-fields team-only">
                 <TeamField
+                  readOnly={readOnly}
                   value={fieldValue(cellKey, "team", preset)}
                   onChange={(v) => setDraft(cellKey, "team", v)}
                   onCommit={() => commit(cellKey, { team: fieldValue(cellKey, "team", preset) })}
@@ -400,8 +406,20 @@ function TurnoPage() {
           </div>
 
           <div className="toolbar__actions">
+            <span className="user-badge">
+              {me.data?.name}
+              {readOnly ? " · sola lettura" : " · Admin"}
+            </span>
+            {!readOnly ? (
+              <Link to="/utenti" className="nav-btn wide">
+                Utenti
+              </Link>
+            ) : null}
             <button className="action-btn" onClick={handlePrint}>
               🖨 Stampa A4
+            </button>
+            <button className="nav-btn wide" onClick={signOut}>
+              Esci
             </button>
           </div>
         </div>
