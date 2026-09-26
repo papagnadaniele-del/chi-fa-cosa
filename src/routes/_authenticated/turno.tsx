@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import "../../turno.css";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/use-me";
+import { SignaturePad } from "@/components/SignaturePad";
 import {
   afternoonRows,
   fullDayRows,
@@ -45,6 +46,7 @@ export const Route = createFileRoute("/_authenticated/turno")({
 
 type CellValue = { specialty?: string; team?: string };
 type CellMap = Record<string, CellValue>;
+type Signature = { img: string; at: string };
 
 const DEFAULT_MONDAY = "2026-06-15";
 
@@ -136,6 +138,8 @@ function TurnoPage() {
   const [roomNames, setRoomNames] = useState<Record<string, string>>({});
   const [cells, setCells] = useState<CellMap>({});
   const [drafts, setDrafts] = useState<CellMap>({});
+  const [signature, setSignature] = useState<Signature | null>(null);
+  const [sigOpen, setSigOpen] = useState(false);
 
   const monday = useMemo(() => parseDate(mondayIso), [mondayIso]);
 
@@ -148,7 +152,21 @@ function TurnoPage() {
       .eq("key", "room_names")
       .maybeSingle()
       .then(({ data }) => setRoomNames((data?.value as Record<string, string>) ?? {}));
+    supabase
+      .from("app_settings")
+      .select("value")
+      .eq("key", "signature")
+      .maybeSingle()
+      .then(({ data }) => {
+        const v = data?.value as Signature | undefined;
+        setSignature(v?.img ? v : null);
+      });
   }, []);
+
+  const saveSignature = (value: Signature | null) => {
+    setSignature(value);
+    void supabase.from("app_settings").upsert({ key: "signature", value: value ?? {} });
+  };
 
   /* Contenuto celle salvato per la settimana visualizzata */
   useEffect(() => {
@@ -478,9 +496,38 @@ function TurnoPage() {
           <div className="doc-footer">
             <div className="signature">
               Il Coordinatore infermieristico
+              <div className="signature__area">
+                {signature?.img && <img src={signature.img} alt="Firma del coordinatore" className="signature__img" />}
+              </div>
               <div className="signature__line"></div>
+              {signature?.at && (
+                <div className="signature__date">
+                  Firmato il {new Date(signature.at).toLocaleDateString("it-IT")}
+                </div>
+              )}
+              {!readOnly && (
+                <div className="signature__actions no-print">
+                  <button type="button" className="nav-btn" onClick={() => setSigOpen(true)}>
+                    {signature?.img ? "Rifirma" : "Firma"}
+                  </button>
+                  {signature?.img && (
+                    <button type="button" className="nav-btn" onClick={() => saveSignature(null)}>
+                      Rimuovi firma
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
+          {sigOpen && (
+            <SignaturePad
+              onCancel={() => setSigOpen(false)}
+              onSave={(img) => {
+                setSigOpen(false);
+                saveSignature({ img, at: new Date().toISOString() });
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
