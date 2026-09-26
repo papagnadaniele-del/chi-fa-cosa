@@ -143,45 +143,88 @@ function UtentiPage() {
               <tr><th>Nome</th><th>Codice fiscale</th><th>Utente</th><th>Amministratore</th><th>Azioni</th></tr>
             </thead>
             <tbody>
-              {(users.data ?? []).map((u) => (
-                <tr key={u.id}>
-                  <td>{u.full_name}</td>
-                  <td>{u.codice_fiscale}</td>
-                  {(["user", "admin"] as Role[]).map((r) => (
-                    <td key={r} className="center">
+              {(users.data ?? []).map((u) =>
+                editId === u.id ? (
+                  <tr key={u.id}>
+                    <td>
+                      <input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Cognome Nome" />
+                    </td>
+                    <td>
                       <input
-                        type="checkbox"
-                        checked={u.roles.includes(r)}
-                        onChange={() =>
-                          run(() => setRoles({ data: { id: u.id, roles: toggle(u.roles, r) } }), "Ruoli aggiornati")
-                        }
+                        value={editCf}
+                        maxLength={16}
+                        onChange={(e) => setEditCf(e.target.value.toUpperCase())}
+                        placeholder="Codice fiscale"
                       />
                     </td>
-                  ))}
-                  <td className="admin-actions">
-                    <button
-                      className="nav-btn wide"
-                      onClick={() => {
-                        const p = window.prompt("Nuova password per " + u.full_name + " (min 8 caratteri)");
-                        if (p) run(() => resetPw({ data: { id: u.id, password: p } }), "Password aggiornata");
-                      }}
-                    >
-                      Password
-                    </button>
-                    {u.id !== me.data?.id ? (
+                    <td colSpan={2}></td>
+                    <td className="admin-actions">
+                      <button
+                        className="nav-btn wide"
+                        onClick={() =>
+                          run(
+                            () => update({ data: { id: u.id, codice_fiscale: editCf, full_name: editName } }),
+                            "Utente aggiornato",
+                          ).then(() => setEditId(null))
+                        }
+                      >
+                        Salva
+                      </button>
+                      <button className="nav-btn wide" onClick={() => setEditId(null)}>
+                        Annulla
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={u.id}>
+                    <td>{u.full_name}</td>
+                    <td>{u.codice_fiscale}</td>
+                    {(["user", "admin"] as Role[]).map((r) => (
+                      <td key={r} className="center">
+                        <input
+                          type="checkbox"
+                          checked={u.roles.includes(r)}
+                          onChange={() =>
+                            run(() => setRoles({ data: { id: u.id, roles: toggle(u.roles, r) } }), "Ruoli aggiornati")
+                          }
+                        />
+                      </td>
+                    ))}
+                    <td className="admin-actions">
                       <button
                         className="nav-btn wide"
                         onClick={() => {
-                          if (window.confirm("Eliminare " + u.full_name + "?"))
-                            run(() => del({ data: { id: u.id } }), "Utente eliminato");
+                          setEditId(u.id);
+                          setEditName(u.full_name);
+                          setEditCf(u.codice_fiscale);
                         }}
                       >
-                        Elimina
+                        Modifica
                       </button>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
+                      <button
+                        className="nav-btn wide"
+                        onClick={() => {
+                          const p = window.prompt("Nuova password per " + u.full_name + " (min 8 caratteri)");
+                          if (p) run(() => resetPw({ data: { id: u.id, password: p } }), "Password aggiornata");
+                        }}
+                      >
+                        Password
+                      </button>
+                      {u.id !== me.data?.id ? (
+                        <button
+                          className="nav-btn wide"
+                          onClick={() => {
+                            if (window.confirm("Eliminare " + u.full_name + "?"))
+                              run(() => del({ data: { id: u.id } }), "Utente eliminato");
+                          }}
+                        >
+                          Elimina
+                        </button>
+                      ) : null}
+                    </td>
+                  </tr>
+                ),
+              )}
             </tbody>
           </table>
         </div>
