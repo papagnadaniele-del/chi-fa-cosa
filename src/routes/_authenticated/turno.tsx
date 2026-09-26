@@ -68,12 +68,14 @@ function AutoField({
   onCommit,
   className,
   placeholder,
+  readOnly,
 }: {
   value: string;
   onChange: (v: string) => void;
   onCommit: () => void;
   className: string;
   placeholder: string;
+  readOnly?: boolean;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -89,15 +91,21 @@ function AutoField({
       ref={ref}
       className={className}
       rows={1}
-      placeholder={placeholder}
+      placeholder={readOnly ? "" : placeholder}
       value={value}
+      readOnly={readOnly}
       onChange={(e) => onChange(e.target.value)}
       onBlur={onCommit}
     />
   );
 }
 
-function TeamField(props: { value: string; onChange: (v: string) => void; onCommit: () => void }) {
+function TeamField(props: {
+  value: string;
+  onChange: (v: string) => void;
+  onCommit: () => void;
+  readOnly?: boolean;
+}) {
   return <AutoField {...props} className="cell-field team" placeholder="Equipe" />;
 }
 
@@ -119,6 +127,10 @@ function StaticCell({ preset }: { preset: Preset }) {
 }
 
 function TurnoPage() {
+  const me = useMe();
+  const readOnly = !me.data?.isAdmin;
+  const navigate = useNavigate();
+  const qc = useQueryClient();
   const [mondayIso, setMondayIso] = useState(DEFAULT_MONDAY);
   const [view, setView] = useState<"sale" | "servizi">("sale");
   const [roomNames, setRoomNames] = useState<Record<string, string>>({});
@@ -130,15 +142,31 @@ function TurnoPage() {
   /* Settimana iniziale: sempre quella del giorno di apertura */
   useEffect(() => {
     setMondayIso(isoDate(getMonday(new Date())));
-    setRoomNames(readJson<Record<string, string>>(ROOM_NAMES_KEY, {}));
+    supabase
+      .from("app_settings")
+      .select("value")
+      .eq("key", "room_names")
+      .maybeSingle()
+      .then(({ data }) => setRoomNames((data?.value as Record<string, string>) ?? {}));
   }, []);
-
 
   /* Contenuto celle salvato per la settimana visualizzata */
   useEffect(() => {
-    setCells(readJson<CellMap>(cellsKey(monday), {}));
+    let active = true;
+    setCells({});
     setDrafts({});
-  }, [monday]);
+    supabase
+      .from("turno_weeks")
+      .select("cells")
+      .eq("week_iso", mondayIso)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (active) setCells((data?.cells as CellMap) ?? {});
+      });
+    return () => {
+      active = false;
+    };
+  }, [mondayIso]);
 
   const days = useMemo(() => {
     const out: Date[] = [];
@@ -158,16 +186,17 @@ function TurnoPage() {
     setMondayIso(isoDate(d));
   };
 
-  const roomLabel = (id: string, fallback: string) => roomNames[id] || fallback;
+  const roomLabel = (id: string, fallback: string) => roomNames[id] ?? fallback;
 
   const setRoomLabel = (id: string, value: string) => {
-    setRoomNames((prev) => {
-      const next = { ...prev };
-      if (value.trim()) next[id] = value.trim();
-      else delete next[id];
-      writeJson(ROOM_NAMES_KEY, next);
-      return next;
-    });
+    setRoomNames((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const commitRoomNames = () => {
+    const clean: Record<string, string> = {};
+    for (const [k, v] of Object.entries(roomNames)) if (v.trim()) clean[k] = v.trim();
+    setRoomNames(clean);
+    void saveRoomNames(clean);
   };
 
   const presetFor = useCallback(
@@ -191,18 +220,27 @@ function TurnoPage() {
   };
 
   const setDraft = (cellKey: string, field: keyof CellValue, value: string) => {
+    if (readOnly) return;
     setDrafts((prev) => ({ ...prev, [cellKey]: { ...prev[cellKey], [field]: value } }));
   };
 
   const commit = (cellKey: string, current: CellValue) => {
+    if (readOnly) return;
     setCells((prev) => {
       const next = { ...prev };
       const merged: CellValue = { ...prev[cellKey], ...current };
       if (merged.specialty || merged.team) next[cellKey] = merged;
       else delete next[cellKey];
-      writeJson(cellsKey(monday), next);
+      void saveWeek(mondayIso, next);
       return next;
     });
+  };
+
+  const signOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
   };
 
   const handlePrint = () => {
