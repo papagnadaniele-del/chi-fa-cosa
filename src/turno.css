@@ -518,3 +518,4 @@
 .turno-app .admin-table .center { text-align: center; }
 .turno-app .admin-actions { display: flex; gap: .4rem; }
 .turno-app a.nav-btn, .turno-app a.action-btn { text-decoration: none; display: inline-flex; align-items: center; }
+.turno-app .admin-sheet .nav-btn, .turno-app .admin-form .action-btn { background: #1e5a74; color: #fff; border: none; padding: .45rem .8rem; border-radius: 6px; cursor: pointer; }
