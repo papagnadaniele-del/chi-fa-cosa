@@ -88,6 +88,31 @@ export const setUserRoles = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const updateUserProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        codice_fiscale: z.string().transform(normalizeCf).refine((v) => CF_REGEX.test(v), "Codice fiscale non valido"),
+        full_name: z.string().trim().min(1, "Nome obbligatorio").max(100),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const email = cfToEmail(data.codice_fiscale);
+    const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(data.id, { email, email_confirm: true });
+    if (authErr) throw new Error(authErr.message.includes("already") ? "Codice fiscale già registrato" : authErr.message);
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ codice_fiscale: data.codice_fiscale, full_name: data.full_name })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const resetUserPassword = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
