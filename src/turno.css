@@ -498,3 +498,24 @@
 @media print {
   .turno-app .cell-field::placeholder { color: transparent !important; }
 }
+
+/* ============ ACCESSO / ADMIN ============ */
+.turno-app .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 1.5rem; }
+.turno-app .auth-card { background: #fff; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.08); padding: 2rem; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: .9rem; }
+.turno-app .auth-card h1 { font-size: 1.3rem; margin: 0; }
+.turno-app .auth-logo { width: 44px; height: 44px; }
+.turno-app .auth-sub, .turno-app .auth-note { margin: 0; color: #64748b; font-size: .85rem; }
+.turno-app .auth-card label { display: flex; flex-direction: column; gap: .3rem; font-size: .85rem; font-weight: 600; }
+.turno-app .auth-card input, .turno-app .admin-form input:not([type=checkbox]) { padding: .55rem .7rem; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+.turno-app .auth-error { color: #b91c1c; font-size: .85rem; margin: .5rem 0; }
+.turno-app .auth-info { color: #15803d; font-size: .85rem; margin: .5rem 0; }
+.turno-app .user-badge { font-size: .8rem; opacity: .85; margin-right: .5rem; }
+.turno-app .admin-sheet h2 { font-size: 1.05rem; margin: 1rem 0 .6rem; }
+.turno-app .admin-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.turno-app .admin-form label { display: flex; gap: .3rem; align-items: center; font-size: .85rem; }
+.turno-app .admin-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.turno-app .admin-table th, .turno-app .admin-table td { border: 1px solid #e2e8f0; padding: .45rem .6rem; text-align: left; }
+.turno-app .admin-table .center { text-align: center; }
+.turno-app .admin-actions { display: flex; gap: .4rem; }
+.turno-app a.nav-btn, .turno-app a.action-btn { text-decoration: none; display: inline-flex; align-items: center; }
+.turno-app .admin-sheet .nav-btn, .turno-app .admin-form .action-btn { background: #1e5a74; color: #fff; border: none; padding: .45rem .8rem; border-radius: 6px; cursor: pointer; }
