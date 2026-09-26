@@ -1,7 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import "../../turno.css";
+import { supabase } from "@/integrations/supabase/client";
+import { useMe } from "@/lib/use-me";
 import {
   afternoonRows,
   fullDayRows,
@@ -43,30 +46,14 @@ export const Route = createFileRoute("/_authenticated/turno")({
 type CellValue = { specialty?: string; team?: string };
 type CellMap = Record<string, CellValue>;
 
-const ROOM_NAMES_KEY = "turno_room_names";
 const DEFAULT_MONDAY = "2026-06-15";
 
-function cellsKey(monday: Date) {
-  return "turno_cells_" + isoDate(monday);
+async function saveWeek(week: string, cells: CellMap) {
+  await supabase.from("turno_weeks").upsert({ week_iso: week, cells, updated_at: new Date().toISOString() });
 }
 
-function readJson<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeJson(key: string, value: unknown) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage non disponibile */
-  }
+async function saveRoomNames(value: Record<string, string>) {
+  await supabase.from("app_settings").upsert({ key: "room_names", value });
 }
 
 function parseDate(iso: string) {

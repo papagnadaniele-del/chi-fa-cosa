@@ -9,50 +9,134 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedTurnoRouteImport } from './routes/_authenticated/turno'
+import { Route as AuthenticatedUtentiRouteImport } from './routes/_authenticated/utenti'
 
-const AuthenticatedTurnoRoute = AuthenticatedTurnoRouteImport.update({
-  id: '/_authenticated/turno',
-  path: '/turno',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedTurnoRoute = AuthenticatedTurnoRouteImport.update({
+  id: '/turno',
+  path: '/turno',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUtentiRoute = AuthenticatedUtentiRouteImport.update({
+  id: '/utenti',
+  path: '/utenti',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/turno': typeof AuthenticatedTurnoRoute
+  '/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/turno': typeof AuthenticatedTurnoRoute
+  '/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/_authenticated/turno': typeof AuthenticatedTurnoRoute
+  '/_authenticated/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/turno'
+  fullPaths: '/' | '/auth' | '/turno' | '/utenti'
   fileRoutesByTo: FileRoutesByTo
-  to: '/turno'
-  id: '__root__' | '/_authenticated/turno'
+  to: '/' | '/auth' | '/turno' | '/utenti'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/turno'
+    | '/_authenticated/utenti'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedTurnoRoute: typeof AuthenticatedTurnoRoute
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/turno': {
       id: '/_authenticated/turno'
       path: '/turno'
       fullPath: '/turno'
       preLoaderRoute: typeof AuthenticatedTurnoRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/utenti': {
+      id: '/_authenticated/utenti'
+      path: '/utenti'
+      fullPath: '/utenti'
+      preLoaderRoute: typeof AuthenticatedUtentiRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedTurnoRoute: typeof AuthenticatedTurnoRoute
+  AuthenticatedUtentiRoute: typeof AuthenticatedUtentiRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTurnoRoute: AuthenticatedTurnoRoute,
+  AuthenticatedUtentiRoute: AuthenticatedUtentiRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
