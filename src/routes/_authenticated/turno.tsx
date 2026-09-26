@@ -229,8 +229,8 @@ function TurnoPage() {
     setCells((prev) => {
       const next = { ...prev };
       const merged: CellValue = { ...prev[cellKey], ...current };
-      if (merged.specialty || merged.team) next[cellKey] = merged;
-      else delete next[cellKey];
+      // Manteniamo la cella anche se vuota: così il valore precompilato non ricompare
+      next[cellKey] = { specialty: merged.specialty ?? "", team: merged.team ?? "" };
       void saveWeek(mondayIso, next);
       return next;
     });
