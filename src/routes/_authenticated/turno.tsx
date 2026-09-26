@@ -433,7 +433,7 @@ function TurnoPage() {
                 {view === "servizi"
                   ? "Assegnazione del personale infermieristico ai servizi di reparto"
                   : "Assegnazione del personale infermieristico alle sale e servizi di reparto"}
-                {view === "sale" ? (
+                {view === "sale" && !readOnly ? (
                   <span className="edit-hint no-print">
                     · i nomi delle sale sono modificabili (clicca sulla cella)
                   </span>
