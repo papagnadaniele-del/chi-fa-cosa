@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import "../turno.css";
+import "../../turno.css";
 import {
   afternoonRows,
   fullDayRows,
@@ -16,9 +16,9 @@ import {
   weeksData,
   type Preset,
   type RowDef,
-} from "../lib/turno-data";
+} from "../../lib/turno-data";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/turno")({
   head: () => ({
     meta: [
       { title: "Chi Fa Cosa - Easy · Turno Settimanale Sale Operatorie" },
