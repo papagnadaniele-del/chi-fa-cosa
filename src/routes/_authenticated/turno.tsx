@@ -296,7 +296,7 @@ function TurnoPage() {
   const docTitle =
     view === "servizi"
       ? "Turno Settimanale Infermieri · Servizi"
-      : "Turno Settimanale Infermieri · Sale Operatorie";
+      : "Turno Settimanale Postazioni Infermieri · Sale Operatorie";
   const toolbarTitle =
     view === "servizi" ? "Gestione Infermieri · Servizi" : "Programma Settimanale · Sale Operatorie";
   const logo = view === "servizi" ? "SV" : "SO";
