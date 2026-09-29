@@ -13,7 +13,7 @@ import {
 import { useMe } from "@/lib/use-me";
 import "../../turno.css";
 
-export const Route = createFileRoute("/_authenticated/utenti")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Gestione utenti · Chi Fa Cosa - Easy" },
