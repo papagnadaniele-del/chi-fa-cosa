@@ -265,6 +265,7 @@
 }
 .turno-app .turno thead th.day .day-name { display: block; font-size: 0.8rem; }
 .turno-app .turno thead th.day .day-num { display: block; font-size: 1.05rem; font-weight: 700; }
+.turno-app .turno thead th.day .day-holiday { display: block; margin-top: .1rem; font-size: .54rem; font-weight: 600; line-height: 1.1; }
 .turno-app .turno thead th.day.weekend { background: var(--t-weekend-header); }
 
 .turno-app .turno tbody tr:nth-child(even) td.cell { background: var(--t-row-alt); }
