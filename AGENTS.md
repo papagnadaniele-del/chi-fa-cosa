@@ -12,3 +12,4 @@
 ## Architettura
 - Accesso con codice fiscale: email tecnica `<cf>@chifacosa.local`, registrazione pubblica disattivata; gli utenti li crea solo un admin.
 - Dati turno condivisi nel database (turno_weeks, app_settings); scrive solo il ruolo admin.
+- Le funzioni amministrative vivono nella pagina protetta `/admin`; evita pagine amministrative duplicate.

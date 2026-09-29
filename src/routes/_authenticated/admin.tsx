@@ -16,10 +16,10 @@ import "../../turno.css";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Gestione utenti · Chi Fa Cosa - Easy" },
-      { name: "description", content: "Crea utenti e assegna i ruoli Utente e Amministratore." },
-      { property: "og:title", content: "Gestione utenti · Chi Fa Cosa - Easy" },
-      { property: "og:description", content: "Amministrazione degli accessi al turno settimanale." },
+      { title: "Pannello Admin · Chi Fa Cosa - Easy" },
+      { name: "description", content: "Pannello amministrativo per gestire utenti e autorizzazioni." },
+      { property: "og:title", content: "Pannello Admin · Chi Fa Cosa - Easy" },
+      { property: "og:description", content: "Gestione amministrativa degli accessi al programma settimanale." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -98,15 +98,30 @@ function UtentiPage() {
         <div className="toolbar no-print">
           <div className="toolbar__title">
             <div className="toolbar__logo">AD</div>
-            <span>Gestione utenti</span>
+            <span>Pannello Admin</span>
           </div>
           <div className="toolbar__actions">
             <Link to="/turno" className="action-btn">← Torna al turno</Link>
           </div>
         </div>
 
-        <div className="sheet admin-sheet">
-          <h2>Nuovo utente</h2>
+        <div className="sheet admin-shell">
+          <div className="admin-heading">
+            <span className="admin-eyebrow">Amministrazione</span>
+            <h1>Pannello Admin</h1>
+            <p>Gestisci gli accessi e le autorizzazioni del personale.</p>
+          </div>
+
+          <nav className="admin-tabs" aria-label="Sezioni amministrazione">
+            <span className="admin-tab active">Utenti</span>
+          </nav>
+
+          <section className="admin-sheet" aria-labelledby="users-heading">
+          <div className="admin-section-heading">
+            <h2 id="users-heading">Utenti</h2>
+            <p>Crea gli accessi e assegna i ruoli Utente o Amministratore.</p>
+          </div>
+          <h3>Nuovo utente</h3>
           <form
             className="admin-form"
             onSubmit={(e) => {
@@ -137,7 +152,8 @@ function UtentiPage() {
           {error ? <div className="auth-error">{error}</div> : null}
           {info ? <div className="auth-info">{info}</div> : null}
 
-          <h2>Utenti abilitati</h2>
+          <h3>Utenti abilitati</h3>
+          <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
               <tr><th>Nome</th><th>Codice fiscale</th><th>Utente</th><th>Amministratore</th><th>Azioni</th></tr>
@@ -227,6 +243,8 @@ function UtentiPage() {
               )}
             </tbody>
           </table>
+          </div>
+          </section>
         </div>
       </div>
     </div>

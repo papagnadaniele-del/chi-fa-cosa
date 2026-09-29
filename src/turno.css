@@ -706,9 +706,22 @@
 
 /* ============ ADMIN ============ */
 .turno-app .user-badge { font-size: .8rem; opacity: .85; margin-right: .5rem; }
-.turno-app .admin-sheet h2 { font-size: 1.05rem; margin: 1rem 0 .6rem; }
+.turno-app .admin-shell { padding: 0; overflow: hidden; }
+.turno-app .admin-heading { padding: 1.6rem 1.8rem 1.35rem; background: #123f4a; color: #fff; }
+.turno-app .admin-eyebrow { display: block; margin-bottom: .35rem; color: #8dd8cb; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.turno-app .admin-heading h1 { margin: 0; font-size: 1.55rem; letter-spacing: 0; }
+.turno-app .admin-heading p { margin: .35rem 0 0; color: #c9dfdf; font-size: .88rem; }
+.turno-app .admin-tabs { display: flex; min-height: 48px; padding: 0 1.8rem; border-bottom: 1px solid #dbe4e8; background: #f7fafb; }
+.turno-app .admin-tab { display: inline-flex; align-items: center; padding: 0 .2rem; color: #536b74; font-size: .85rem; font-weight: 700; border-bottom: 3px solid transparent; }
+.turno-app .admin-tab.active { color: #0e7490; border-bottom-color: #0e7490; }
+.turno-app .admin-sheet { padding: 1.25rem 1.8rem 1.8rem; }
+.turno-app .admin-section-heading { margin-bottom: 1.2rem; }
+.turno-app .admin-section-heading h2 { margin: 0; font-size: 1.2rem; color: #1f2d34; }
+.turno-app .admin-section-heading p { margin: .25rem 0 0; color: #64748b; font-size: .84rem; }
+.turno-app .admin-sheet h3 { font-size: .9rem; margin: 1rem 0 .6rem; color: #334b55; }
 .turno-app .admin-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 .turno-app .admin-form label { display: flex; gap: .3rem; align-items: center; font-size: .85rem; }
+.turno-app .admin-table-wrap { overflow-x: auto; }
 .turno-app .admin-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
 .turno-app .admin-table th, .turno-app .admin-table td { border: 1px solid #e2e8f0; padding: .45rem .6rem; text-align: left; }
 .turno-app .admin-table .center { text-align: center; }
@@ -717,3 +730,9 @@
 .turno-app .admin-table input:not([type=checkbox]) { width: 100%; padding: .35rem .5rem; }
 .turno-app a.nav-btn, .turno-app a.action-btn { text-decoration: none; display: inline-flex; align-items: center; }
 .turno-app .admin-sheet .nav-btn, .turno-app .admin-form .action-btn { background: #1e5a74; color: #fff; border: none; padding: .45rem .8rem; border-radius: 6px; cursor: pointer; }
+@media (max-width: 700px) {
+  .turno-app .admin-heading, .turno-app .admin-sheet { padding-left: 1rem; padding-right: 1rem; }
+  .turno-app .admin-tabs { padding: 0 1rem; }
+  .turno-app .admin-form { align-items: stretch; }
+  .turno-app .admin-form > input:not([type=checkbox]) { width: 100%; }
+}
