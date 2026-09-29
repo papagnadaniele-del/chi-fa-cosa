@@ -6,6 +6,7 @@ import "../../turno.css";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/use-me";
 import { SignaturePad } from "@/components/SignaturePad";
+import { holidayForDate } from "@/lib/holidays";
 import {
   afternoonRows,
   fullDayRows,
@@ -323,8 +324,9 @@ function TurnoPage() {
           row.label
         )}
       </td>
-      {days.map((_, i) => {
-        const weekend = i >= 5;
+      {days.map((day, i) => {
+        const holiday = holidayForDate(day);
+        const weekend = i >= 5 || Boolean(holiday);
         const preset = presetFor(row.id, i);
         const cellKey = row.id + "_" + i;
         const editableCell = row.editableCells;
@@ -334,7 +336,7 @@ function TurnoPage() {
         if (editableCell || editableTeam) classes.push("editable");
 
         return (
-          <td key={i} className={classes.join(" ")}>
+          <td key={i} className={classes.join(" ")} title={holiday?.name}>
             {editableCell ? (
               <div className="cell-fields">
                 <AutoField
@@ -470,12 +472,16 @@ function TurnoPage() {
             <thead>
               <tr>
                 <th className="col-cat">{(mesiNomi[monday.getMonth()] ?? "").toUpperCase()}</th>
-                {days.map((d, i) => (
-                  <th key={i} className={"day" + (i >= 5 ? " weekend" : "")}>
+                {days.map((d, i) => {
+                  const holiday = holidayForDate(d);
+                  return (
+                  <th key={i} className={"day" + (i >= 5 || holiday ? " weekend" : "")} title={holiday?.name}>
                     <span className="day-name">{giorniNomi[d.getDay()]}</span>
                     <span className="day-num">{d.getDate()}</span>
+                    {holiday ? <span className="day-holiday">{holiday.name}</span> : null}
                   </th>
-                ))}
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
