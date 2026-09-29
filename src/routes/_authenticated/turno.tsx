@@ -429,8 +429,8 @@ function TurnoPage() {
               {readOnly ? " · sola lettura" : " · Admin"}
             </span>
             {!readOnly ? (
-              <Link to="/utenti" className="nav-btn wide">
-                Utenti
+              <Link to="/admin" className="nav-btn wide">
+                Admin
               </Link>
             ) : null}
             <button className="action-btn" onClick={handlePrint}>

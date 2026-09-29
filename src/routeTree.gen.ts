@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTurnoRouteImport } from './routes/_authenticated/turno'
-import { Route as AuthenticatedUtentiRouteImport } from './routes/_authenticated/utenti'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,49 +29,49 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTurnoRoute = AuthenticatedTurnoRouteImport.update({
   id: '/turno',
   path: '/turno',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedUtentiRoute = AuthenticatedUtentiRouteImport.update({
-  id: '/utenti',
-  path: '/utenti',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/turno': typeof AuthenticatedTurnoRoute
-  '/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/turno': typeof AuthenticatedTurnoRoute
-  '/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/turno': typeof AuthenticatedTurnoRoute
-  '/_authenticated/utenti': typeof AuthenticatedUtentiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/turno' | '/utenti'
+  fullPaths: '/' | '/auth' | '/admin' | '/turno'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/turno' | '/utenti'
+  to: '/' | '/auth' | '/admin' | '/turno'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/admin'
     | '/_authenticated/turno'
-    | '/_authenticated/utenti'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -103,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/turno': {
       id: '/_authenticated/turno'
       path: '/turno'
@@ -110,24 +117,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTurnoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/utenti': {
-      id: '/_authenticated/utenti'
-      path: '/utenti'
-      fullPath: '/utenti'
-      preLoaderRoute: typeof AuthenticatedUtentiRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedTurnoRoute: typeof AuthenticatedTurnoRoute
-  AuthenticatedUtentiRoute: typeof AuthenticatedUtentiRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedTurnoRoute: AuthenticatedTurnoRoute,
-  AuthenticatedUtentiRoute: AuthenticatedUtentiRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
