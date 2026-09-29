@@ -27,12 +27,18 @@ function easterSunday(year: number) {
 }
 
 export function getHolidays(year: number): Holiday[] {
+  const easter = easterSunday(year);
   const easterMonday = easterSunday(year);
   easterMonday.setDate(easterMonday.getDate() + 1);
 
   return [
     { date: dateIso(year, 1, 1), name: "Capodanno", type: "nazionale" },
     { date: dateIso(year, 1, 6), name: "Epifania", type: "nazionale" },
+    {
+      date: dateIso(easter.getFullYear(), easter.getMonth() + 1, easter.getDate()),
+      name: "Pasqua",
+      type: "nazionale",
+    },
     {
       date: dateIso(easterMonday.getFullYear(), easterMonday.getMonth() + 1, easterMonday.getDate()),
       name: "Lunedì dell’Angelo",
