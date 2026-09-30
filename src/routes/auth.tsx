@@ -55,9 +55,9 @@ function AuthPage() {
               </h2>
               <div className="auth-hero__bar" />
               <p className="auth-hero__desc">
-                Programma settimanale delle sale operatorie e dei servizi, condiviso online:
-                il personale abilitato consulta il programma da qualsiasi dispositivo
-                e l'amministratore lo aggiorna in tempo reale.
+                Programma settimanale per sale operatorie.
+                {"\n"}Web App con condivisione online.{"\u00a0"}
+                {"\n"}Il personale abilitato consulta il programma da qualsiasi dispositivo e l'amministratore lo aggiorna in tempo reale.
               </p>
             </div>
             <div className="auth-hero__bottom">
