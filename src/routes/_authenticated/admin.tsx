@@ -179,6 +179,13 @@ function UtentiPage() {
             >
               Festività
             </button>
+            <button
+              type="button"
+              className={"admin-tab" + (section === "righe" ? " active" : "")}
+              onClick={() => setSection("righe")}
+            >
+              Sale e servizi
+            </button>
           </nav>
 
           {section === "utenti" ? (
@@ -311,7 +318,7 @@ function UtentiPage() {
           </table>
           </div>
           </section>
-          ) : (
+          ) : section === "festivita" ? (
           <section className="admin-sheet" aria-labelledby="holidays-heading">
             <div className="admin-section-heading holiday-heading">
               <div>
