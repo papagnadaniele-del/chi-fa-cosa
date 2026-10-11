@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { defaultLayout, isValidLayout, type LayoutRow, type TurnoLayout } from "@/lib/turno-data";
 import {
   createAppUser,
   deleteAppUser,
@@ -65,9 +67,55 @@ function UtentiPage() {
   const [roles, setNewRoles] = useState<Role[]>(["user"]);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
-  const [section, setSection] = useState<"utenti" | "festivita">("utenti");
+  const [section, setSection] = useState<"utenti" | "festivita" | "righe">("utenti");
   const [holidayYear, setHolidayYear] = useState(new Date().getFullYear());
   const holidays = getHolidays(holidayYear);
+
+  const [layout, setLayout] = useState<TurnoLayout>(defaultLayout());
+  const [layoutLoaded, setLayoutLoaded] = useState(false);
+  const [newLabels, setNewLabels] = useState<Record<keyof TurnoLayout, string>>({
+    saleMattina: "",
+    salePomeriggio: "",
+    serviziMattina: "",
+    serviziPomeriggio: "",
+  });
+
+  useEffect(() => {
+    supabase
+      .from("app_settings")
+      .select("value")
+      .eq("key", "layout")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (isValidLayout(data?.value)) setLayout(data.value);
+        setLayoutLoaded(true);
+      });
+  }, []);
+
+  const layoutSections: { key: keyof TurnoLayout; title: string }[] = [
+    { key: "saleMattina", title: "Sale · Mattina" },
+    { key: "salePomeriggio", title: "Sale · Pomeriggio" },
+    { key: "serviziMattina", title: "Servizi · Mattina" },
+    { key: "serviziPomeriggio", title: "Servizi · Pomeriggio" },
+  ];
+
+  const addRow = (key: keyof TurnoLayout) => {
+    const label = (newLabels[key] ?? "").trim();
+    if (!label) return;
+    const row: LayoutRow = { id: "r" + Date.now().toString(36), label };
+    setLayout((prev) => ({ ...prev, [key]: [...prev[key], row] }));
+    setNewLabels((prev) => ({ ...prev, [key]: "" }));
+  };
+
+  const removeRow = (key: keyof TurnoLayout, id: string) => {
+    setLayout((prev) => ({ ...prev, [key]: prev[key].filter((r) => r.id !== id) }));
+  };
+
+  const saveLayout = () =>
+    run(async () => {
+      const { error: err } = await supabase.from("app_settings").upsert({ key: "layout", value: layout });
+      if (err) throw new Error(err.message);
+    }, "Righe salvate");
 
   if (me.isLoading) return <div className="turno-app"><div className="auth-wrap">Caricamento…</div></div>;
   if (!me.data?.isAdmin)
