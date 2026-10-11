@@ -750,3 +750,65 @@
   .turno-app .holiday-row { grid-template-columns: 1fr; gap: .2rem; }
   .turno-app .holiday-type { justify-self: start; margin-top: .25rem; }
 }
+
+/* ---------- Admin: righe sale e servizi ---------- */
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 0.8rem;
+}
+.layout-box {
+  border: 1px solid var(--t-line, #e2e8f0);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--t-card, #fff);
+}
+.layout-box h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--t-muted, #64748b);
+}
+.layout-list {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.layout-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.layout-list li span {
+  overflow-wrap: anywhere;
+}
+.layout-empty {
+  color: var(--t-muted, #64748b);
+  font-style: italic;
+}
+.layout-add {
+  display: flex;
+  gap: 8px;
+}
+.layout-add input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--t-line, #e2e8f0);
+  border-radius: 6px;
+  font: inherit;
+}
+.layout-save {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
