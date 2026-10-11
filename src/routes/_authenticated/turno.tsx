@@ -8,19 +8,19 @@ import { useMe } from "@/lib/use-me";
 import { SignaturePad } from "@/components/SignaturePad";
 import { holidayForDate } from "@/lib/holidays";
 import {
-  afternoonRows,
+  defaultLayout,
   fullDayRows,
   getMonday,
   giorniNomi,
+  isValidLayout,
   isoDate,
   mesiNomi,
-  morningRows,
-  serviziAfternoonRows,
-  serviziMorningRows,
   weekNumber,
   weeksData,
+  type LayoutRow,
   type Preset,
   type RowDef,
+  type TurnoLayout,
 } from "../../lib/turno-data";
 
 export const Route = createFileRoute("/_authenticated/turno")({
