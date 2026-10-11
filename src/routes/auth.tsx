@@ -102,7 +102,7 @@ function AuthPage() {
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 16v-4M12 8h.01" />
               </svg>
-              Le credenziali sono fornite dall'amministratore. In caso di smarrimento contattare il coordinatore infermieristico.
+              Le credenziali sono fornite dall'amministratore. In caso di smarrimento contattare l'amministratore della Web App.
             </p>
           </section>
         </div>
