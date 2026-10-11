@@ -87,7 +87,7 @@ export type TurnoLayout = {
 export function defaultLayout(): TurnoLayout {
   return {
     saleMattina: morningRows.map((r) => ({ id: r.id, label: r.label })),
-    salePomeriggio: afternoonRows.map((r) => ({ id: r.id, label: r.label, linkTo: r.linkTo })),
+    salePomeriggio: afternoonRows.map((r) => ({ id: r.id, label: r.label, ...(r.linkTo ? { linkTo: r.linkTo } : {}) })),
     serviziMattina: serviziMorningRows.map((r) => ({ id: r.id, label: r.label })),
     serviziPomeriggio: serviziAfternoonRows.map((r) => ({ id: r.id, label: r.label })),
   };
