@@ -355,6 +355,65 @@ function UtentiPage() {
               ))}
             </div>
           </section>
+          ) : (
+          <section className="admin-sheet" aria-labelledby="righe-heading">
+            <div className="admin-section-heading">
+              <h2 id="righe-heading">Sale e servizi</h2>
+              <p>Aggiungi o rimuovi le righe del programma settimanale, per sale e servizi, mattina e pomeriggio.</p>
+            </div>
+            {!layoutLoaded ? (
+              <p>Caricamento…</p>
+            ) : (
+              <>
+                <div className="layout-grid">
+                  {layoutSections.map(({ key, title }) => (
+                    <div className="layout-box" key={key}>
+                      <h3>{title}</h3>
+                      <ul className="layout-list">
+                        {layout[key].map((row) => (
+                          <li key={row.id}>
+                            <span>{row.label}</span>
+                            <button
+                              type="button"
+                              className="nav-btn wide"
+                              onClick={() => removeRow(key, row.id)}
+                            >
+                              Rimuovi
+                            </button>
+                          </li>
+                        ))}
+                        {layout[key].length === 0 ? <li className="layout-empty">Nessuna riga</li> : null}
+                      </ul>
+                      <div className="layout-add">
+                        <input
+                          placeholder="Nome nuova riga"
+                          value={newLabels[key]}
+                          onChange={(e) => setNewLabels((prev) => ({ ...prev, [key]: e.target.value }))}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              addRow(key);
+                            }
+                          }}
+                        />
+                        <button type="button" className="action-btn" onClick={() => addRow(key)}>
+                          Aggiungi
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="layout-save">
+                  <button type="button" className="action-btn" onClick={saveLayout}>
+                    Salva righe
+                  </button>
+                  <span className="holiday-note">Dopo il salvataggio, il programma settimanale mostra le nuove righe a tutti gli utenti.</span>
+                </div>
+              </>
+            )}
+            {section === "righe" && error ? <div className="auth-error">{error}</div> : null}
+            {section === "righe" && info ? <div className="auth-info">{info}</div> : null}
+          </section>
           )}
         </div>
       </div>
