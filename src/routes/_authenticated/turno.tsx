@@ -8,19 +8,19 @@ import { useMe } from "@/lib/use-me";
 import { SignaturePad } from "@/components/SignaturePad";
 import { holidayForDate } from "@/lib/holidays";
 import {
-  afternoonRows,
+  defaultLayout,
   fullDayRows,
   getMonday,
   giorniNomi,
+  isValidLayout,
   isoDate,
   mesiNomi,
-  morningRows,
-  serviziAfternoonRows,
-  serviziMorningRows,
   weekNumber,
   weeksData,
+  type LayoutRow,
   type Preset,
   type RowDef,
+  type TurnoLayout,
 } from "../../lib/turno-data";
 
 export const Route = createFileRoute("/_authenticated/turno")({
@@ -141,6 +141,7 @@ function TurnoPage() {
   const [drafts, setDrafts] = useState<CellMap>({});
   const [signature, setSignature] = useState<Signature | null>(null);
   const [sigOpen, setSigOpen] = useState(false);
+  const [layout, setLayout] = useState<TurnoLayout>(defaultLayout());
 
   const monday = useMemo(() => parseDate(mondayIso), [mondayIso]);
 
@@ -161,6 +162,14 @@ function TurnoPage() {
       .then(({ data }) => {
         const v = data?.value as Signature | undefined;
         setSignature(v?.img ? v : null);
+      });
+    supabase
+      .from("app_settings")
+      .select("value")
+      .eq("key", "layout")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (isValidLayout(data?.value)) setLayout(data.value);
       });
   }, []);
 
@@ -277,8 +286,16 @@ function TurnoPage() {
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const mRows = view === "servizi" ? serviziMorningRows : morningRows;
-  const aRows = view === "servizi" ? serviziAfternoonRows : afternoonRows;
+  const saleDef = (r: LayoutRow): RowDef => ({
+    id: r.id,
+    label: r.label,
+    editable: true,
+    ...(r.linkTo ? { linkTo: r.linkTo } : {}),
+    editableCells: true,
+  });
+  const servDef = (r: LayoutRow): RowDef => ({ id: r.id, label: r.label, editableTeam: true });
+  const mRows = view === "servizi" ? layout.serviziMattina.map(servDef) : layout.saleMattina.map(saleDef);
+  const aRows = view === "servizi" ? layout.serviziPomeriggio.map(servDef) : layout.salePomeriggio.map(saleDef);
   const fRows = view === "servizi" ? [] : fullDayRows;
 
   const end = new Date(monday);

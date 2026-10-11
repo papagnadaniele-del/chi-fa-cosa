@@ -74,6 +74,34 @@ export const serviziAfternoonRows: RowDef[] = [
   { id: "uff2", label: "Ufficio", editableTeam: true },
 ];
 
+/* ---------- Layout dinamico delle righe (gestito dal pannello Admin) ---------- */
+export type LayoutRow = { id: string; label: string; linkTo?: string };
+
+export type TurnoLayout = {
+  saleMattina: LayoutRow[];
+  salePomeriggio: LayoutRow[];
+  serviziMattina: LayoutRow[];
+  serviziPomeriggio: LayoutRow[];
+};
+
+export function defaultLayout(): TurnoLayout {
+  return {
+    saleMattina: morningRows.map((r) => ({ id: r.id, label: r.label })),
+    salePomeriggio: afternoonRows.map((r) => ({ id: r.id, label: r.label, ...(r.linkTo ? { linkTo: r.linkTo } : {}) })),
+    serviziMattina: serviziMorningRows.map((r) => ({ id: r.id, label: r.label })),
+    serviziPomeriggio: serviziAfternoonRows.map((r) => ({ id: r.id, label: r.label })),
+  };
+}
+
+export function isValidLayout(v: unknown): v is TurnoLayout {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  const ok = (a: unknown) =>
+    Array.isArray(a) &&
+    a.every((r) => r && typeof r === "object" && typeof (r as LayoutRow).id === "string" && typeof (r as LayoutRow).label === "string");
+  return ok(o["saleMattina"]) && ok(o["salePomeriggio"]) && ok(o["serviziMattina"]) && ok(o["serviziPomeriggio"]);
+}
+
 const E: Preset = null;
 const URG: Preset = { t: "ev. urgenza" };
 
