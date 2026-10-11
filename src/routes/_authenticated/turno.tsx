@@ -290,7 +290,7 @@ function TurnoPage() {
     id: r.id,
     label: r.label,
     editable: true,
-    linkTo: r.linkTo,
+    ...(r.linkTo ? { linkTo: r.linkTo } : {}),
     editableCells: true,
   });
   const servDef = (r: LayoutRow): RowDef => ({ id: r.id, label: r.label, editableTeam: true });

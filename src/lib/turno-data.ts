@@ -99,7 +99,7 @@ export function isValidLayout(v: unknown): v is TurnoLayout {
   const ok = (a: unknown) =>
     Array.isArray(a) &&
     a.every((r) => r && typeof r === "object" && typeof (r as LayoutRow).id === "string" && typeof (r as LayoutRow).label === "string");
-  return ok(o.saleMattina) && ok(o.salePomeriggio) && ok(o.serviziMattina) && ok(o.serviziPomeriggio);
+  return ok(o["saleMattina"]) && ok(o["salePomeriggio"]) && ok(o["serviziMattina"]) && ok(o["serviziPomeriggio"]);
 }
 
 const E: Preset = null;
