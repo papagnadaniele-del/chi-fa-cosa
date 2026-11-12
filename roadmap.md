@@ -1,3 +1,3 @@
-- [ ] Gestione festività nazionali e locali riservata agli amministratori.
-- [ ] Applicazione delle festività salvate al programma settimanale.
-- [ ] Verifica delle regole e del flusso di aggiunta/rimozione.
+- [x] Gestione festività nazionali e locali riservata agli amministratori.
+- [x] Applicazione delle festività salvate al programma settimanale.
+- [x] Verifica delle regole e del flusso di aggiunta/rimozione.
