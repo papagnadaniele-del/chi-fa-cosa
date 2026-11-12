@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import "../../turno.css";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/use-me";
+import { useTurnoLayout } from "@/lib/turno-layout";
 import { SignaturePad } from "@/components/SignaturePad";
 import { holidayForDate } from "@/lib/holidays";
 import {
@@ -12,7 +13,6 @@ import {
   fullDayRows,
   getMonday,
   giorniNomi,
-  isValidLayout,
   isoDate,
   mesiNomi,
   weekNumber,
@@ -20,7 +20,6 @@ import {
   type LayoutRow,
   type Preset,
   type RowDef,
-  type TurnoLayout,
 } from "../../lib/turno-data";
 
 export const Route = createFileRoute("/_authenticated/turno")({
@@ -141,7 +140,8 @@ function TurnoPage() {
   const [drafts, setDrafts] = useState<CellMap>({});
   const [signature, setSignature] = useState<Signature | null>(null);
   const [sigOpen, setSigOpen] = useState(false);
-  const [layout, setLayout] = useState<TurnoLayout>(defaultLayout());
+  const layoutQuery = useTurnoLayout();
+  const layout = layoutQuery.data ?? defaultLayout();
 
   const monday = useMemo(() => parseDate(mondayIso), [mondayIso]);
 
@@ -162,14 +162,6 @@ function TurnoPage() {
       .then(({ data }) => {
         const v = data?.value as Signature | undefined;
         setSignature(v?.img ? v : null);
-      });
-    supabase
-      .from("app_settings")
-      .select("value")
-      .eq("key", "layout")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (isValidLayout(data?.value)) setLayout(data.value);
       });
   }, []);
 
@@ -485,6 +477,7 @@ function TurnoPage() {
             </div>
           </div>
 
+          {layoutQuery.error ? <div className="auth-error no-print">Impossibile aggiornare le righe: {layoutQuery.error.message}</div> : null}
           <table className="turno">
             <thead>
               <tr>

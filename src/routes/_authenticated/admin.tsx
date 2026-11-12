@@ -3,7 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { defaultLayout, isValidLayout, type LayoutRow, type TurnoLayout } from "@/lib/turno-data";
+import { defaultLayout, type LayoutRow, type TurnoLayout } from "@/lib/turno-data";
+import { turnoLayoutKey, useTurnoLayout } from "@/lib/turno-layout";
+import { Button } from "@/components/ui/button";
 import {
   createAppUser,
   deleteAppUser,
@@ -72,7 +74,9 @@ function UtentiPage() {
   const holidays = getHolidays(holidayYear);
 
   const [layout, setLayout] = useState<TurnoLayout>(defaultLayout());
-  const [layoutLoaded, setLayoutLoaded] = useState(false);
+  const layoutQuery = useTurnoLayout();
+  const [layoutDirty, setLayoutDirty] = useState(false);
+  const [layoutSaving, setLayoutSaving] = useState(false);
   const [newLabels, setNewLabels] = useState<Record<keyof TurnoLayout, string>>({
     saleMattina: "",
     salePomeriggio: "",
@@ -81,16 +85,8 @@ function UtentiPage() {
   });
 
   useEffect(() => {
-    supabase
-      .from("app_settings")
-      .select("value")
-      .eq("key", "layout")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (isValidLayout(data?.value)) setLayout(data.value);
-        setLayoutLoaded(true);
-      });
-  }, []);
+    if (layoutQuery.data && !layoutDirty) setLayout(layoutQuery.data);
+  }, [layoutQuery.data, layoutDirty]);
 
   const layoutSections: { key: keyof TurnoLayout; title: string }[] = [
     { key: "saleMattina", title: "Sale · Mattina" },
@@ -104,18 +100,36 @@ function UtentiPage() {
     if (!label) return;
     const row: LayoutRow = { id: "r" + Date.now().toString(36), label };
     setLayout((prev) => ({ ...prev, [key]: [...prev[key], row] }));
+    setLayoutDirty(true);
+    setInfo("");
     setNewLabels((prev) => ({ ...prev, [key]: "" }));
   };
 
   const removeRow = (key: keyof TurnoLayout, id: string) => {
     setLayout((prev) => ({ ...prev, [key]: prev[key].filter((r) => r.id !== id) }));
+    setLayoutDirty(true);
+    setInfo("");
   };
 
-  const saveLayout = () =>
-    run(async () => {
-      const { error: err } = await supabase.from("app_settings").upsert({ key: "layout", value: layout });
+  const saveLayout = async () => {
+    if (layoutSaving) return;
+    setLayoutSaving(true);
+    setError("");
+    setInfo("");
+    try {
+      const { data, error: err } = await supabase.from("app_settings")
+        .upsert({ key: "layout", value: layout }).select("value").single();
       if (err) throw new Error(err.message);
-    }, "Righe salvate");
+      qc.setQueryData(turnoLayoutKey, data.value);
+      setLayoutDirty(false);
+      await qc.invalidateQueries({ queryKey: turnoLayoutKey });
+      setInfo("Righe salvate");
+    } catch (e) {
+      setError(msg(e));
+    } finally {
+      setLayoutSaving(false);
+    }
+  };
 
   if (me.isLoading) return <div className="turno-app"><div className="auth-wrap">Caricamento…</div></div>;
   if (!me.data?.isAdmin)
@@ -361,7 +375,9 @@ function UtentiPage() {
               <h2 id="righe-heading">Sale e servizi</h2>
               <p>Aggiungi o rimuovi le righe del programma settimanale, per sale e servizi, mattina e pomeriggio.</p>
             </div>
-            {!layoutLoaded ? (
+            {layoutQuery.error ? (
+              <div className="auth-error">Impossibile caricare le righe: {layoutQuery.error.message}</div>
+            ) : !layoutQuery.data ? (
               <p>Caricamento…</p>
             ) : (
               <>
@@ -376,6 +392,7 @@ function UtentiPage() {
                             <button
                               type="button"
                               className="nav-btn wide"
+                              disabled={layoutSaving}
                               onClick={() => removeRow(key, row.id)}
                             >
                               Rimuovi
@@ -387,6 +404,7 @@ function UtentiPage() {
                       <div className="layout-add">
                         <input
                           placeholder="Nome nuova riga"
+                          disabled={layoutSaving}
                           value={newLabels[key]}
                           onChange={(e) => setNewLabels((prev) => ({ ...prev, [key]: e.target.value }))}
                           onKeyDown={(e) => {
@@ -396,7 +414,7 @@ function UtentiPage() {
                             }
                           }}
                         />
-                        <button type="button" className="action-btn" onClick={() => addRow(key)}>
+                        <button type="button" className="action-btn" disabled={layoutSaving} onClick={() => addRow(key)}>
                           Aggiungi
                         </button>
                       </div>
@@ -404,9 +422,9 @@ function UtentiPage() {
                   ))}
                 </div>
                 <div className="layout-save">
-                  <button type="button" className="action-btn" onClick={saveLayout}>
-                    Salva righe
-                  </button>
+                  <Button type="button" className="action-btn" disabled={layoutSaving || !layoutDirty} onClick={saveLayout}>
+                    {layoutSaving ? "Salvataggio…" : "Salva righe"}
+                  </Button>
                   <span className="holiday-note">Dopo il salvataggio, il programma settimanale mostra le nuove righe a tutti gli utenti.</span>
                 </div>
               </>
