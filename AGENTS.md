@@ -14,3 +14,4 @@
 - Dati turno condivisi nel database (turno_weeks, app_settings); scrive solo il ruolo admin.
 - Le funzioni amministrative vivono nella pagina protetta `/admin`; evita pagine amministrative duplicate.
 - Share the row layout through one React Query key, invalidate after saving, and refresh on focus and periodically so open schedules do not retain stale rows; keep unsaved Admin edits separate from refreshed data.
+- Persist row removal directly from its action and restore the previous draft on failure, so leaving Admin does not silently undo a removal.

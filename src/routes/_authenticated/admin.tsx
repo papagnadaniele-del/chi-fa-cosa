@@ -105,10 +105,31 @@ function UtentiPage() {
     setNewLabels((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const removeRow = (key: keyof TurnoLayout, id: string) => {
-    setLayout((prev) => ({ ...prev, [key]: prev[key].filter((r) => r.id !== id) }));
+  const removeRow = async (key: keyof TurnoLayout, id: string) => {
+    if (layoutSaving) return;
+    const previous = layout;
+    const wasDirty = layoutDirty;
+    const next = { ...layout, [key]: layout[key].filter((r) => r.id !== id) };
+    setLayout(next);
     setLayoutDirty(true);
+    setLayoutSaving(true);
+    setError("");
     setInfo("");
+    try {
+      const { data, error: err } = await supabase.from("app_settings")
+        .upsert({ key: "layout", value: next }).select("value").single();
+      if (err) throw new Error(err.message);
+      qc.setQueryData(turnoLayoutKey, data.value);
+      setLayoutDirty(false);
+      await qc.invalidateQueries({ queryKey: turnoLayoutKey });
+      setInfo("Riga rimossa");
+    } catch (e) {
+      setLayout(previous);
+      setLayoutDirty(wasDirty);
+      setError(msg(e));
+    } finally {
+      setLayoutSaving(false);
+    }
   };
 
   const saveLayout = async () => {
@@ -389,14 +410,14 @@ function UtentiPage() {
                         {layout[key].map((row) => (
                           <li key={row.id}>
                             <span>{row.label}</span>
-                            <button
+                            <Button
                               type="button"
                               className="nav-btn wide"
                               disabled={layoutSaving}
                               onClick={() => removeRow(key, row.id)}
                             >
                               Rimuovi
-                            </button>
+                            </Button>
                           </li>
                         ))}
                         {layout[key].length === 0 ? <li className="layout-empty">Nessuna riga</li> : null}
