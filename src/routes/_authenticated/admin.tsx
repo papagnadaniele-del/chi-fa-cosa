@@ -15,7 +15,7 @@ import {
   updateUserProfile,
 } from "@/lib/admin.functions";
 import { useMe } from "@/lib/use-me";
-import { getHolidays } from "@/lib/holidays";
+import { AdminHolidays } from "@/components/AdminHolidays";
 import "../../turno.css";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -70,8 +70,6 @@ function UtentiPage() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [section, setSection] = useState<"utenti" | "festivita" | "righe">("utenti");
-  const [holidayYear, setHolidayYear] = useState(new Date().getFullYear());
-  const holidays = getHolidays(holidayYear);
 
   const [layout, setLayout] = useState<TurnoLayout>(defaultLayout());
   const layoutQuery = useTurnoLayout();
@@ -354,42 +352,7 @@ function UtentiPage() {
           </div>
           </section>
           ) : section === "festivita" ? (
-          <section className="admin-sheet" aria-labelledby="holidays-heading">
-            <div className="admin-section-heading holiday-heading">
-              <div>
-                <h2 id="holidays-heading">Festività</h2>
-                <p>Festività nazionali italiane e festività locale del Comune di Osimo.</p>
-              </div>
-              <label className="holiday-year">
-                Anno
-                <select value={holidayYear} onChange={(event) => setHolidayYear(Number(event.target.value))}>
-                  {Array.from({ length: 11 }, (_, index) => new Date().getFullYear() - 5 + index).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <div className="holiday-note">
-              Queste date vengono applicate automaticamente ogni anno al programma settimanale.
-            </div>
-            <div className="holiday-list">
-              {holidays.map((holiday) => (
-                <div className="holiday-row" key={holiday.date}>
-                  <time dateTime={holiday.date}>
-                    {new Date(`${holiday.date}T12:00:00`).toLocaleDateString("it-IT", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </time>
-                  <strong>{holiday.name}</strong>
-                  <span className={"holiday-type " + holiday.type}>
-                    {holiday.type === "locale" ? "Locale · Osimo" : "Nazionale"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
+          <AdminHolidays />
           ) : (
           <section className="admin-sheet" aria-labelledby="righe-heading">
             <div className="admin-section-heading">
