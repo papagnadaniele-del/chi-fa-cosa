@@ -8,6 +8,7 @@ import { useMe } from "@/lib/use-me";
 import { useTurnoLayout } from "@/lib/turno-layout";
 import { SignaturePad } from "@/components/SignaturePad";
 import { holidayForDate } from "@/lib/holidays";
+import { useHolidaySettings } from "@/lib/holiday-settings";
 import {
   defaultLayout,
   fullDayRows,
@@ -140,6 +141,7 @@ function TurnoPage() {
   const [drafts, setDrafts] = useState<CellMap>({});
   const [signature, setSignature] = useState<Signature | null>(null);
   const [sigOpen, setSigOpen] = useState(false);
+  const holidaySettings = useHolidaySettings();
   const layoutQuery = useTurnoLayout();
   const layout = layoutQuery.data ?? defaultLayout();
 
@@ -334,7 +336,7 @@ function TurnoPage() {
         )}
       </td>
       {days.map((day, i) => {
-        const holiday = holidayForDate(day);
+        const holiday = holidayForDate(day, holidaySettings.data);
         const weekend = i >= 5 || Boolean(holiday);
         const preset = presetFor(row.id, i);
         const cellKey = row.id + "_" + i;
@@ -483,7 +485,7 @@ function TurnoPage() {
               <tr>
                 <th className="col-cat">{(mesiNomi[monday.getMonth()] ?? "").toUpperCase()}</th>
                 {days.map((d, i) => {
-                  const holiday = holidayForDate(d);
+                  const holiday = holidayForDate(d, holidaySettings.data);
                   return (
                   <th key={i} className={"day" + (i >= 5 || holiday ? " weekend" : "")} title={holiday?.name}>
                     <span className="day-name">{giorniNomi[d.getDay()]}</span>
