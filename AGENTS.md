@@ -15,3 +15,4 @@
 - Le funzioni amministrative vivono nella pagina protetta `/admin`; evita pagine amministrative duplicate.
 - Share the row layout through one React Query key, invalidate after saving, and refresh on focus and periodically so open schedules do not retain stale rows; keep unsaved Admin edits separate from refreshed data.
 - Persist row removal directly from its action and restore the previous draft on failure, so leaving Admin does not silently undo a removal.
+- Store annual holiday additions and default-holiday exclusions in app_settings under holidays; reuse one query for Admin and schedule highlighting, with writes protected by existing admin-only RLS.
