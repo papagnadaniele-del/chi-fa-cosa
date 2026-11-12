@@ -26,12 +26,32 @@ function easterSunday(year: number) {
   return new Date(year, month - 1, day);
 }
 
-export function getHolidays(year: number): Holiday[] {
+export type HolidaySettings = {
+  additions: { id: string; monthDay: string; name: string; type: Holiday["type"] }[];
+  excluded: string[];
+};
+
+export const emptyHolidaySettings: HolidaySettings = { additions: [], excluded: [] };
+
+export function isHolidaySettings(value: unknown): value is HolidaySettings {
+  if (!value || typeof value !== "object") return false;
+  const v = value as HolidaySettings;
+  return Array.isArray(v.excluded) && v.excluded.every((id) => typeof id === "string") &&
+    Array.isArray(v.additions) && v.additions.every((h) => h && typeof h.id === "string" &&
+      typeof h.name === "string" && /^\d{2}-\d{2}$/.test(h.monthDay) &&
+      (h.type === "nazionale" || h.type === "locale"));
+}
+
+export function holidayId(holiday: Holiday): string {
+  return `${holiday.type}:${holiday.name}`;
+}
+
+export function getHolidays(year: number, settings: HolidaySettings = emptyHolidaySettings): (Holiday & { id: string })[] {
   const easter = easterSunday(year);
   const easterMonday = easterSunday(year);
   easterMonday.setDate(easterMonday.getDate() + 1);
 
-  return [
+  const defaults: Holiday[] = [
     { date: dateIso(year, 1, 1), name: "Capodanno", type: "nazionale" },
     { date: dateIso(year, 1, 6), name: "Epifania", type: "nazionale" },
     {
@@ -53,10 +73,18 @@ export function getHolidays(year: number): Holiday[] {
     { date: dateIso(year, 12, 8), name: "Immacolata Concezione", type: "nazionale" },
     { date: dateIso(year, 12, 25), name: "Natale", type: "nazionale" },
     { date: dateIso(year, 12, 26), name: "Santo Stefano", type: "nazionale" },
-  ].sort((a, b) => a.date.localeCompare(b.date)) as Holiday[];
+  ];
+  return [
+    ...defaults.map((h) => ({ ...h, id: holidayId(h) })).filter((h) => !settings.excluded.includes(h.id)),
+    ...settings.additions.map((h) => ({ date: `${year}-${h.monthDay}`, name: h.name, type: h.type, id: h.id }))
+      .filter((h) => {
+        const d = new Date(`${h.date}T12:00:00`);
+        return dateIso(d.getFullYear(), d.getMonth() + 1, d.getDate()) === h.date;
+      }),
+  ].sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export function holidayForDate(date: Date) {
+export function holidayForDate(date: Date, settings: HolidaySettings = emptyHolidaySettings) {
   const iso = dateIso(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  return getHolidays(date.getFullYear()).find((holiday) => holiday.date === iso);
+  return getHolidays(date.getFullYear(), settings).find((holiday) => holiday.date === iso);
 }
